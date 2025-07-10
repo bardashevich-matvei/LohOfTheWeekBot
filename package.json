@@ -9,7 +9,8 @@
 		"format": "prettier --write .",
 		"lint-staged": {
 			"**/*.{js,ts,tsx,json,css,md}": "prettier --write"
-		}
+		},
+		"prepare": "husky install"
 	},
 	"keywords": [],
 	"author": "",

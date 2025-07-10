@@ -30,7 +30,7 @@ bot.use(stage.middleware());
 bot.command('persona', (ctx) => ctx.scene.enter('characterWizard'));
 
 bot.on('text', async (ctx, next) => {
-	if (ctx.message.text.startsWith('/') || ctx.scene?.current) return next();
+if (ctx.message.text.startsWith('/') || ctx.scene?.current) return next();
 	ctx.reply('Try /persona');
 });
 
