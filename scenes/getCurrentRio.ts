@@ -67,7 +67,6 @@ export const characterWizard = new Scenes.WizardScene<MyContext>(
 					`❌ Ошибка!\nИнформация: ${error}`,
 				);
 			}
-			ctx.reply(`ошибка! персонаж не найден!`);
 			return ctx.scene.leave(); // завершаем сцену
 		}
 	},
