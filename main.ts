@@ -1,80 +1,23 @@
-import { Telegraf, Scenes, session, Context } from 'telegraf';
-import { getCharacterInfo } from './getCharacterInfo';
+import { Telegraf, Scenes, session } from 'telegraf';
 import * as dotenv from 'dotenv';
-import { WizardSessionData } from 'telegraf/typings/scenes';
-import * as uuid from 'uuid';
+import { characterWizard, MyContext } from './scenes/getCurrentRio';
 dotenv.config();
 
-interface MySession extends WizardSessionData {
-    characterName?: string;
-    realmName?: string;
-}
+// const characterScene = new Scenes.BaseScene<Scenes.SceneContext>('characterScene');
 
-const characterScene = new Scenes.BaseScene<Scenes.SceneContext>('characterScene');
+// characterScene.enter((ctx) => {
+//     ctx.reply('Введите имя персонажа:');
+// });
 
-type MyContext = Context & Scenes.WizardContext<MySession>;
-const characterWizard = new Scenes.WizardScene<MyContext>(
-    'characterWizard',
+// characterScene.on('text', async (ctx) => {
+//     const characterName = ctx.message.text;
+//     ctx.reply(`Вы ввели: ${characterName}`);
 
-    async (ctx) => {
-        ctx.reply('Введите имя персонажа:');
-        return ctx.wizard.next();
-    },
+//     const info = await getCharacterInfo('silvermoon', `${characterName}`);
+//     ctx.reply(`${info}`);
 
-    async (ctx, next) => {
-        console.log('шаг 2');
-        if (!ctx.message || !('text' in ctx.message)) {
-          ctx.reply('Пожалуйста, введите текст.');
-          return ctx.wizard.back();
-        }
-        if (ctx.session.__scenes) {
-            ctx.session.__scenes.characterName = ctx.message.text;
-            ctx.reply(`Имя персонажа сохранено: ${ctx.message.text}\nВведите название сервера:`);
-            return ctx.wizard.next();
-        } else {
-            return ctx.scene.leave();
-        }
-    },
-
-    async (ctx) => {
-        if (!ctx.message || !('text' in ctx.message)) {
-          ctx.reply('Пожалуйста, введите текст.');
-          return ctx.wizard.back();
-        }
-        if (ctx.session.__scenes) {
-            ctx.session.__scenes.realmName = ctx.message.text;
-            const characterName = ctx.session.__scenes.characterName;
-            const realmName = ctx.session.__scenes.realmName;
-            ctx.reply(`Имя персонажа сохранено: ${characterName}\nCервер сохранён: ${realmName}`);
-            const message = await ctx.reply('⏳ Загрузка информации...');
-            const info = await getCharacterInfo(realmName, `${characterName}`);
-            await ctx.telegram.editMessageText(
-                ctx.chat?.id,
-                message.message_id,
-                undefined,
-                `✅ Готово!\nИнформация: ${info}`
-            );
-
-        } else {
-            ctx.reply(`ошибка! персонаж не найден!`);
-        }
-        return ctx.scene.leave(); // завершаем сцену
-      }
-)
-
-characterScene.enter((ctx) => {
-    ctx.reply('Введите имя персонажа:');
-});
-
-characterScene.on('text', async (ctx) => {
-    const characterName = ctx.message.text;
-    ctx.reply(`Вы ввели: ${characterName}`);
-
-    const info = await getCharacterInfo('silvermoon', `${characterName}`);
-    ctx.reply(`${info}`);
-
-    await ctx.scene.leave();
-});
+//     await ctx.scene.leave();
+// });
 
 // const stage = new Scenes.Stage<Scenes.SceneContext>([characterScene]);
 const stage = new Scenes.Stage<MyContext>([characterWizard]);
@@ -86,7 +29,7 @@ bot.use(stage.middleware());
 
 bot.command('persona', (ctx) => ctx.scene.enter('characterWizard'));
 
- 
+
 bot.on('text', async (ctx, next) => {
     if (ctx.message.text.startsWith('/') || ctx.scene?.current) return next();
     ctx.reply("Try /persona");

@@ -1,7 +1,5 @@
 import axios from 'axios';
-import * as dotenv from 'dotenv';
 import * as qs from 'querystring';
-dotenv.config();
 
 const CLIENT_ID = process.env.BLIZZARD_CLIENT_ID!;
 const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET!;
