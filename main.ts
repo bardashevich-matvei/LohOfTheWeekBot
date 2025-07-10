@@ -39,3 +39,6 @@ bot.launch();
 bot.telegram.setMyCommands([{ command: 'persona', description: 'WoW' }]);
 
          console.log('Бот запущен');
+
+
+		
