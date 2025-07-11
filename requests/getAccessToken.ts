@@ -1,14 +1,13 @@
 import axios from 'axios';
 import * as qs from 'querystring';
 
-const CLIENT_ID = process.env.BLIZZARD_CLIENT_ID!;
-const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET!;
-
 let cachedToken: string | null = null;
 let tokenExpiry: number = 0; // UNIX timestamp в миллисекундах
 
 export async function getAccessToken(): Promise<string> {
 	const now = Date.now();
+	const CLIENT_ID = process.env.BLIZZARD_CLIENT_ID!;
+	const CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET!;
 
 	if (cachedToken && now < tokenExpiry) {
 		return cachedToken;

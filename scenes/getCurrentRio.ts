@@ -43,9 +43,6 @@ export const characterWizard = new Scenes.WizardScene<MyContext>(
 				ctx.session.__scenes.realmName = ctx.message.text;
 				const characterName = ctx.session.__scenes.characterName;
 				const realmName = ctx.session.__scenes.realmName;
-				ctx.reply(
-					`Имя персонажа сохранено: ${characterName}\nCервер сохранён: ${realmName}`,
-				);
 				console.log(`Имя персонажа: ${characterName} Cервер: ${realmName}`);
 				message = await ctx.reply('⏳ Загрузка информации...');
 				const info = await getCharacterInfo(realmName, `${characterName}`);
@@ -54,6 +51,9 @@ export const characterWizard = new Scenes.WizardScene<MyContext>(
 					message.message_id,
 					undefined,
 					`✅ Готово!\nИнформация: ${info}`,
+				);
+				ctx.reply(
+					`Имя персонажа сохранено: ${characterName}\nCервер сохранён: ${realmName}`,
 				);
 			} else {
 			}

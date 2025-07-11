@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { CharacterRioInfoDto } from '../dtos/CharacterRioInfoDto.dto';
+import { CharacterModel } from '../mongoDB/schemas/character.schema';
 import { getAccessToken } from './getAccessToken';
 
 export async function getCharacterInfo(realm: string, characterName: string): Promise<any> {
@@ -17,7 +18,26 @@ export async function getCharacterInfo(realm: string, characterName: string): Pr
 
 	try {
 		const response: CharacterRioInfoDto = (await axios.get(url, { params, headers })).data;
+
 		console.log('Рейтинг: ', response.current_mythic_rating.rating);
+
+		await CharacterModel.updateOne(
+			{
+				username: response.character.name,
+				realm: response.character.realm.name,
+			},
+			{
+				$set: {
+					username: response.character.name,
+					realm: response.character.realm.name,
+					rio: response.current_mythic_rating.rating,
+				},
+			},
+			{
+				upsert: true,
+			},
+		);
+
 		return `${Math.round(response.current_mythic_rating.rating)} rio`;
 	} catch (error: any) {
 		console.error(
