@@ -1,8 +1,11 @@
 import { Telegraf, Scenes, session } from 'telegraf';
 import * as dotenv from 'dotenv';
-import { characterWizard, MyContext } from './scenes/getCurrentRio';
 import { connectDB } from './mongoDB/index';
 import { getAllCharacters } from './requests/getAllCharacters';
+import { RioContext } from './types';
+import { characterWizard } from './scenes/getCurrentRio';
+import { upsertWizard } from './scenes/upsertPersona';
+import { deleteWizard } from './scenes/deletePersona';
 
 dotenv.config();
 connectDB();
@@ -24,9 +27,9 @@ connectDB();
 // });
 
 // const stage = new Scenes.Stage<Scenes.SceneContext>([characterScene]);
-const stage = new Scenes.Stage<MyContext>([characterWizard]);
+const stage = new Scenes.Stage<RioContext>([characterWizard, upsertWizard, deleteWizard]);
 
-const bot = new Telegraf<MyContext>(process.env.TOKEN!);
+const bot = new Telegraf<RioContext>(process.env.TOKEN!);
 
 bot.use(session());
 bot.use(stage.middleware());
@@ -44,17 +47,21 @@ bot.command('all_characters', async (ctx) => {
 		.join('\n');
 	ctx.reply(`📋 Список пользователей:\n\n${text}`);
 });
+bot.command('delete_persona', (ctx) => ctx.scene.enter('deleteWizard'));
+bot.command('upsert_persona', (ctx) => ctx.scene.enter('upsertWizard'));
 
 bot.on('text', async (ctx, next) => {
 	if (ctx.message.text.startsWith('/') || ctx.scene?.current) return next();
-	ctx.reply('Try /persona');
+	ctx.reply('Try any command');
 });
 
 bot.launch();
 
 bot.telegram.setMyCommands([
-	{ command: 'persona', description: 'WoW' },
+	{ command: 'persona', description: 'get rio' },
 	{ command: 'all_characters', description: 'all characters' },
+	{ command: 'delete_persona', description: 'delete persona from weekly check' },
+	{ command: 'upsert_persona', description: 'add/update persona to weekly check' },
 ]);
 
 console.log('Бот запущен');

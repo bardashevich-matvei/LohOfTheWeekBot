@@ -2,11 +2,11 @@ import { Scenes } from 'telegraf';
 import { RioContext } from '../types';
 import { addName } from './scenesHelpers/addName';
 import { addRealm } from './scenesHelpers/addRealm';
-import { getCharacterRio } from './scenesHelpers/getCharacterRio';
+import { deleteCharacterFromList } from './scenesHelpers/deleteCharacterFromList';
 
-export const characterWizard = new Scenes.WizardScene<RioContext>(
-	'characterWizard',
+export const deleteWizard = new Scenes.WizardScene<RioContext>(
+	'deleteWizard',
 	addName,
 	addRealm,
-	getCharacterRio,
+	deleteCharacterFromList,
 );
