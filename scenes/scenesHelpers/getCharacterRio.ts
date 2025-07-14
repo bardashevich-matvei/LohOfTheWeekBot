@@ -9,7 +9,7 @@ export const getCharacterRio: MiddlewareFn<RioContext> = async (ctx: RioContext)
 		message = await ctx.reply('⏳ Загрузка информации...');
 
 		const { characterName, realmName } = await checkNameAndRealm(ctx);
-		const info = await getCharacterInfo(characterName, realmName);
+		const info = await getCharacterInfo(realmName, characterName);
 
 		const rio = info.current_mythic_rating.rating ?? 0;
 

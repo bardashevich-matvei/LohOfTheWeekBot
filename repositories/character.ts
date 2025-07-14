@@ -3,8 +3,8 @@ import { CharacterModel } from '../mongoDB/schemas/character.schema';
 export async function updateOrCreateOne(realm: string, username: string, rio?: number) {
 	return CharacterModel.updateOne(
 		{
-			username,
-			realm,
+			username: new RegExp(`^${username}$`, 'i'),
+			realm: new RegExp(`^${realm}$`, 'i'),
 		},
 		{
 			$set: {
@@ -21,7 +21,7 @@ export async function updateOrCreateOne(realm: string, username: string, rio?: n
 
 export async function deleteOne(realm: string, username: string) {
 	return CharacterModel.deleteOne({
-		username,
-		realm,
+		username: new RegExp(`^${username}$`, 'i'),
+		realm: new RegExp(`^${realm}$`, 'i'),
 	});
 }

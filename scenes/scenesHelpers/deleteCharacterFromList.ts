@@ -10,7 +10,7 @@ export const deleteCharacterFromList: MiddlewareFn<RioContext> = async (ctx: Rio
 
 		const { characterName, realmName } = await checkNameAndRealm(ctx);
 
-		const res = await deleteOne(characterName, realmName);
+		const res = await deleteOne(realmName, characterName);
 
 		if (res.deletedCount === 0) {
 			await ctx.telegram.editMessageText(
