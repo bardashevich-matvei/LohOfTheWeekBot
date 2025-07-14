@@ -1,17 +1,14 @@
 import axios from 'axios';
-import { CharacterRioInfoDto } from '../dtos/CharacterRioInfo.dto';
+import { SeasonIndexDto } from '../dtos/SeasonIndex.dto';
 import { getAccessToken } from './getAccessToken';
 
-export async function getCharacterInfo(
-	realm: string,
-	characterName: string,
-): Promise<CharacterRioInfoDto> {
+export async function getCurrentSeasonIndex(): Promise<number> {
 	const token = await getAccessToken();
 
-	const url = `https://eu.api.blizzard.com/profile/wow/character/${realm.toLowerCase()}/${characterName.toLowerCase()}/mythic-keystone-profile`;
+	const url = `https://eu.api.blizzard.com/data/wow/mythic-keystone/season/index`;
 
 	const params = {
-		namespace: 'profile-eu',
+		namespace: 'dynamic-eu',
 		locale: 'en_US',
 	};
 	const headers = {
@@ -19,9 +16,9 @@ export async function getCharacterInfo(
 	};
 
 	try {
-		const response: CharacterRioInfoDto = (await axios.get(url, { params, headers })).data;
+		const response: SeasonIndexDto = (await axios.get(url, { params, headers })).data;
 
-		return response;
+		return response.current_season.id;
 	} catch (error: any) {
 		console.error(
 			'Ошибка при получении данных:',

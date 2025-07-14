@@ -32,7 +32,7 @@ export const deleteCharacterFromList: MiddlewareFn<RioContext> = async (ctx: Rio
 			ctx.chat?.id,
 			message?.message_id,
 			undefined,
-			`❌ Ошибка!\nИнформация: ${error}`,
+			`❌ Ошибка!\n${error}`,
 		);
 	} finally {
 		return ctx.scene.leave(); // завершаем сцену

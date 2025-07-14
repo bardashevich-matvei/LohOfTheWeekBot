@@ -29,7 +29,7 @@ export const upsertCharacterToList: MiddlewareFn<RioContext> = async (ctx: RioCo
 			ctx.chat?.id,
 			message?.message_id,
 			undefined,
-			`❌ Ошибка!\nИнформация: ${error}`,
+			`❌ Ошибка!\n${error}`,
 		);
 	} finally {
 		return ctx.scene.leave(); // завершаем сцену

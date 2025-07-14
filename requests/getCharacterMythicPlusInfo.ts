@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { CharacterRioInfoDto } from '../dtos/CharacterRioInfo.dto';
+import { MythicPlusInfoDto } from '../dtos/MythicPlusInfo.dto';
 import { getAccessToken } from './getAccessToken';
 
-export async function getCharacterInfo(
+export async function getCharacterMythicPlusInfo(
+	seasonId: number,
 	realm: string,
 	characterName: string,
-): Promise<CharacterRioInfoDto> {
+): Promise<MythicPlusInfoDto> {
 	const token = await getAccessToken();
 
-	const url = `https://eu.api.blizzard.com/profile/wow/character/${realm.toLowerCase()}/${characterName.toLowerCase()}/mythic-keystone-profile`;
+	const url = `https://eu.api.blizzard.com/profile/wow/character/${realm.toLowerCase()}/${characterName.toLowerCase()}/mythic-keystone-profile/season/${seasonId}`;
 
 	const params = {
 		namespace: 'profile-eu',
@@ -19,7 +20,7 @@ export async function getCharacterInfo(
 	};
 
 	try {
-		const response: CharacterRioInfoDto = (await axios.get(url, { params, headers })).data;
+		const response: MythicPlusInfoDto = (await axios.get(url, { params, headers })).data;
 
 		return response;
 	} catch (error: any) {

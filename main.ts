@@ -6,6 +6,9 @@ import { RioContext } from './types';
 import { characterWizard } from './scenes/getCurrentRio';
 import { upsertWizard } from './scenes/upsertPersona';
 import { deleteWizard } from './scenes/deletePersona';
+import cron from 'node-cron';
+import { getCurrentSeasonIndex } from './requests/getCurrentSeasonInfo';
+import { addSeason, findOneSeasonById } from './repositories/season';
 
 dotenv.config();
 connectDB();
@@ -58,10 +61,24 @@ bot.on('text', async (ctx, next) => {
 bot.launch();
 
 bot.telegram.setMyCommands([
-	{ command: 'persona', description: 'get rio' },
-	{ command: 'all_characters', description: 'all characters' },
-	{ command: 'delete_persona', description: 'delete persona from weekly check' },
-	{ command: 'upsert_persona', description: 'add/update persona to weekly check' },
+	{ command: 'persona', description: 'покажет текущий рио и лучший ключ в тайм' },
+	{ command: 'all_characters', description: 'все персонажи в списке LohOfTheWeek' },
+	{ command: 'delete_persona', description: 'удалить персонажа из списка LohOfTheWeek' },
+	{
+		command: 'upsert_persona',
+		description: 'добавить/обновить инфу о персонаже в списке LohOfTheWeek',
+	},
 ]);
 
 console.log('Бот запущен');
+
+// Запускается каждый день в 7:01
+cron.schedule('1 7 * * *', async () => {
+	console.log('Выполняем задачу в 12:00 каждый день');
+	const seasonId = await getCurrentSeasonIndex();
+	const oldId = await findOneSeasonById(seasonId);
+	if (!oldId) {
+		console.log('новый сезон начался');
+		await addSeason(seasonId);
+	}
+});
