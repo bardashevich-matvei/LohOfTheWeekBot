@@ -5,7 +5,7 @@ export const connectDB = async () => {
 		const user = process.env.DB_USER!;
 		const password = process.env.DB_PASSWORD!;
 		const uri = `mongodb+srv://${user}:${password}@cluster0.dcz8yjz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-		console.log(uri);
+
 		await mongoose.connect(uri, {
 			dbName: 'lohoftheweek',
 		});
