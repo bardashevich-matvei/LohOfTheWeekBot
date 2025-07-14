@@ -27,7 +27,7 @@ connectDB();
 // });
 
 // const stage = new Scenes.Stage<Scenes.SceneContext>([characterScene]);
-const stage = new Scenes.Stage<RioContext>([characterWizard, upsertWizard, deleteWizard]);
+const stage = new Scenes.Stage<RioContext>([characterWizard, deleteWizard, upsertWizard]);
 
 const bot = new Telegraf<RioContext>(process.env.TOKEN!);
 

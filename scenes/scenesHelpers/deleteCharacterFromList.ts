@@ -10,14 +10,23 @@ export const deleteCharacterFromList: MiddlewareFn<RioContext> = async (ctx: Rio
 
 		const { characterName, realmName } = await checkNameAndRealm(ctx);
 
-		await deleteOne(characterName, realmName);
+		const res = await deleteOne(characterName, realmName);
 
-		await ctx.telegram.editMessageText(
-			ctx.chat?.id,
-			message.message_id,
-			undefined,
-			`✅ Готово!\nИнформация: персонаж удалён`,
-		);
+		if (res.deletedCount === 0) {
+			await ctx.telegram.editMessageText(
+				ctx.chat?.id,
+				message.message_id,
+				undefined,
+				`❌ К сожалению, такого персонажа нет в списке`,
+			);
+		} else {
+			await ctx.telegram.editMessageText(
+				ctx.chat?.id,
+				message.message_id,
+				undefined,
+				`✅ Готово!\nИнформация: персонаж удалён`,
+			);
+		}
 	} catch (error) {
 		await ctx.telegram.editMessageText(
 			ctx.chat?.id,

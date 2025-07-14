@@ -1,7 +1,7 @@
 import { CharacterModel } from '../mongoDB/schemas/character.schema';
 
 export async function updateOrCreateOne(realm: string, username: string, rio?: number) {
-	await CharacterModel.updateOne(
+	return CharacterModel.updateOne(
 		{
 			username,
 			realm,
@@ -20,7 +20,7 @@ export async function updateOrCreateOne(realm: string, username: string, rio?: n
 }
 
 export async function deleteOne(realm: string, username: string) {
-	await CharacterModel.deleteOne({
+	return CharacterModel.deleteOne({
 		username,
 		realm,
 	});

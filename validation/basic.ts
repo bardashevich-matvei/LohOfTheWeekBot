@@ -1,4 +1,3 @@
-import { Message } from 'telegraf/typings/core/types/typegram';
 import { RioContext } from '../types';
 
 export async function checkNameAndRealm(
@@ -19,4 +18,12 @@ export async function checkNameAndRealm(
 	} else {
 		throw new Error('ошибка данных сессии');
 	}
+}
+
+export function messageCheck(ctx: RioContext) {
+	if (!ctx.message || !('text' in ctx.message)) {
+		ctx.reply('Пожалуйста, введите текст.');
+		return ctx.wizard.back();
+	}
+	throw new Error('ошибка валидации сообщения');
 }
