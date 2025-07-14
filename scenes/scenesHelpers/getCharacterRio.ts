@@ -1,6 +1,6 @@
 import { MiddlewareFn } from 'telegraf';
 import { MythicPlusInfoDto } from '../../dtos/MythicPlusInfo.dto';
-import { findLastSeason } from '../../repositories/season';
+import { addSeason, findLastSeason } from '../../repositories/season';
 import { getCharacterInfo } from '../../requests/getCharacterInfo';
 import { getCharacterMythicPlusInfo } from '../../requests/getCharacterMythicPlusInfo';
 import { getCurrentSeasonIndex } from '../../requests/getCurrentSeasonInfo';
@@ -37,6 +37,7 @@ export const getCharacterRio: MiddlewareFn<RioContext> = async (ctx: RioContext)
 		let lastSeason = (await findLastSeason())?.id;
 		if (!lastSeason) {
 			lastSeason = await getCurrentSeasonIndex();
+			await addSeason(lastSeason);
 		}
 
 		const mythicPlusInfo = await getCharacterMythicPlusInfo(
