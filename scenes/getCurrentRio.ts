@@ -1,16 +1,11 @@
-import { Scenes } from 'telegraf';
-import { RioContext } from '../types';
-import { addName } from './scenesHelpers/addName';
-import { addRealm } from './scenesHelpers/addRealm';
+import { withCancel } from './scenesHelpers/helpers/exit';
+import { addFullName } from './scenesHelpers/addName';
 import { getCharacterRio } from './scenesHelpers/getCharacterRio';
 import { saveName } from './scenesHelpers/saveName';
-import { saveRealm } from './scenesHelpers/saveRealm';
+import { TimedWizardScene } from './scenesHelpers/helpers/TimesWizard';
 
-export const characterWizard = new Scenes.WizardScene<RioContext>(
+export const characterWizard = new TimedWizardScene(
 	'characterWizard',
-	addName,
-	saveName,
-	addRealm,
-	saveRealm,
-	getCharacterRio,
+	{ timeoutMs: 60 * 1000, timeoutMessage: 'Время ожидания истекло. Сцена завершена.' },
+	...withCancel([addFullName, saveName, getCharacterRio]),
 );

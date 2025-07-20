@@ -9,6 +9,7 @@ import { deleteWizard } from './scenes/deletePersona';
 import cron from 'node-cron';
 import { getCurrentSeasonIndex } from './requests/getCurrentSeasonInfo';
 import { addSeason, findOneSeasonById } from './repositories/season';
+import { COMMANDS } from './constants';
 
 dotenv.config();
 connectDB();
@@ -53,22 +54,29 @@ bot.command('all_characters', async (ctx) => {
 bot.command('delete_persona', (ctx) => ctx.scene.enter('deleteWizard'));
 bot.command('upsert_persona', (ctx) => ctx.scene.enter('upsertWizard'));
 
+bot.command('exit', async (ctx) => {
+	if (ctx.scene?.current) {
+		await ctx.reply('Вы вышли из текущего режима ❌');
+		await ctx.scene.leave();
+	} else {
+		await ctx.reply('Нет активного действия для отмены 🤷‍♂️');
+	}
+});
+
 bot.on('text', async (ctx, next) => {
 	if (ctx.message.text.startsWith('/') || ctx.scene?.current) return next();
-	ctx.reply('Try any command');
+	ctx.reply(
+		`Выбери что-то из списка команд: \n\n${COMMANDS.map(
+			(command) => `/${command.command} - ${command.description}`,
+		)
+			.slice(0, -1)
+			.join('\n')}`,
+	);
 });
 
 bot.launch();
 
-bot.telegram.setMyCommands([
-	{ command: 'persona', description: 'покажет текущий рио и лучший ключ в тайм' },
-	{ command: 'all_characters', description: 'все персонажи в списке LohOfTheWeek' },
-	{ command: 'delete_persona', description: 'удалить персонажа из списка LohOfTheWeek' },
-	{
-		command: 'upsert_persona',
-		description: 'добавить/обновить инфу о персонаже в списке LohOfTheWeek',
-	},
-]);
+bot.telegram.setMyCommands(COMMANDS);
 
 console.log('Бот запущен');
 

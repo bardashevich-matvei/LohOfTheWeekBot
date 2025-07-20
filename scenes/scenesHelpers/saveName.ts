@@ -8,7 +8,10 @@ export const saveName: MiddlewareFn<RioContext> = async (ctx: RioContext) => {
 		ctx.reply('Пожалуйста, введите текст.');
 		return ctx.wizard.back();
 	} else {
-		ctx.session.__scenes.characterName = ctx.message.text;
+		ctx.session.__scenes.realmName = ctx.message.text.slice(0, ctx.message.text.indexOf('-'));
+		ctx.session.__scenes.characterName = ctx.message.text.slice(
+			ctx.message.text.indexOf('-') + 1,
+		);
 		await ctx.reply(`Имя персонажа сохранено: ${ctx.message.text}`);
 		await runNextStep(ctx);
 	}
